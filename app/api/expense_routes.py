@@ -51,3 +51,53 @@ async def get_expenses_by_month_range(
 async def get_expenses_by_year(year: int):
     filtered_expenses = [expense for expense in expenses if expense.date.year == year]
     return {"expenses": filtered_expenses}
+
+
+@router.get("/by_category/")
+async def get_expenses_by_category(category: str):
+    filtered_expenses = [
+        expense for expense in expenses if expense.category.lower() == category.lower()
+    ]
+    return {"expenses": filtered_expenses}
+
+
+@router.get("/by_category_and_month/")
+async def get_expenses_by_category_and_month(category: str, year: int, month: int):
+    filtered_expenses = [
+        expense
+        for expense in expenses
+        if expense.category.lower() == category.lower()
+        and expense.date.year == year
+        and expense.date.month == month
+    ]
+    return {"expenses": filtered_expenses}
+
+
+@router.get("/by_category_and_year/")
+async def get_expenses_by_category_and_year(category: str, year: int):
+    filtered_expenses = [
+        expense
+        for expense in expenses
+        if expense.category.lower() == category.lower() and expense.date.year == year
+    ]
+    return {"expenses": filtered_expenses}
+
+
+@router.get("/by_category_and_month_range/")
+async def get_expenses_by_category_and_month_range(
+    category: str, start_year: int, start_month: int, end_year: int, end_month: int
+):
+    filtered_expenses = [
+        expense
+        for expense in expenses
+        if expense.category.lower() == category.lower()
+        and (
+            (expense.date.year > start_year)
+            or (expense.date.year == start_year and expense.date.month >= start_month)
+        )
+        and (
+            (expense.date.year < end_year)
+            or (expense.date.year == end_year and expense.date.month <= end_month)
+        )
+    ]
+    return {"expenses": filtered_expenses}
