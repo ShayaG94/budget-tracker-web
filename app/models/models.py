@@ -1,11 +1,11 @@
-from pydantic import BaseModel
-from datetime import date
+from pydantic import BaseModel, Field
+from datetime import datetime
 from typing import Optional
 
 
 class Income(BaseModel):
     id: Optional[int] = None
-    date: date
+    date: datetime
     source: str
     category: str
     amount: float
@@ -14,7 +14,7 @@ class Income(BaseModel):
 
 class Expense(BaseModel):
     id: Optional[int] = None
-    date: date
+    date: datetime
     description: str
     category: str
     amount: float
