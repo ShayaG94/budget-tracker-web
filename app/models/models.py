@@ -1,21 +1,22 @@
 from pydantic import BaseModel, Field
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 
 class Income(BaseModel):
-    id: Optional[int] = None
     date: datetime
     source: str
     category: str
     amount: float
+    tags: Optional[List[str]] = None
     attachment: Optional[str] = None
 
 
 class Expense(BaseModel):
-    id: Optional[int] = None
     date: datetime
-    description: str
+    store: str
+    description: Optional[str] = None
     category: str
     amount: float
+    tags: Optional[List[str]] = None
     attachment: Optional[str] = None
