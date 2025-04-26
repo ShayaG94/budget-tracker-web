@@ -1,5 +1,6 @@
 from fastapi import FastAPI
-from app.api import income_routes, expense_routes  # Import the routers
+from app.api import income_routes
+from app.api.expense_routes import expense_routes
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
