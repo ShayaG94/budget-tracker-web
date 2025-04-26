@@ -2,6 +2,5 @@
 __pycache__/
 venv/
 readme_continuation.txt
-tests/
 .pytest_cache/
 seeds/
