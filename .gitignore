@@ -1,6 +1,7 @@
-.gitignore
 __pycache__/
 venv/
 readme_continuation.txt
 .pytest_cache/
 seeds/
+gemini_prompt.txt
+.vscode/
