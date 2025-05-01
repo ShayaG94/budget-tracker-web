@@ -18,7 +18,7 @@ def get_income_by_source(source: str) -> List[Income]:
 
 
 def get_income_by_source_and_month(source: str, year: int, month: int) -> List[Income]:
-    date_query = create_date_range_query(year, month, year, month)
+    date_query = create_date_range_query(year, month, year, month + 1)
     query = {
         "source": create_type_query(source),
         "date": date_query,

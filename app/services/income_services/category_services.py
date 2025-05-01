@@ -1,6 +1,5 @@
 from pymongo import MongoClient
 from app.models.models import Income
-import datetime
 from typing import List
 from app.utils.date_utils import create_date_range_query
 from app.utils.type_utils import create_type_query
@@ -20,7 +19,7 @@ def get_income_by_category(category: str) -> List[Income]:
 def get_income_by_category_and_month(
     category: str, year: int, month: int
 ) -> List[Income]:
-    date_query = create_date_range_query(year, month, year, month)
+    date_query = create_date_range_query(year, month, year, month + 1)
     query = {
         "category": create_type_query(category),
         "date": date_query,
