@@ -5,3 +5,4 @@ readme_continuation.txt
 seeds/
 gemini_prompt.txt
 .vscode/
+tests/
