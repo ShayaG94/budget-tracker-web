@@ -14,8 +14,8 @@ async def create_income(income: Income):
 
 
 @router.get("/", response_model=List[Income])
-async def get_all_income():
-    incomes = general_services.get_all_income()
+async def get_all_incomes():
+    incomes = general_services.get_all_incomes()
     return incomes
 
 
