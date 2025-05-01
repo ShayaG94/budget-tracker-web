@@ -15,9 +15,12 @@ def create_income(income: Income) -> Income:
     return income
 
 
-def get_all_income() -> List[Income]:
+def get_all_incomes():
     incomes_data = income_collection.find()
-    incomes_list = [Income(**income) for income in incomes_data]
+    incomes_list = []
+    for income in incomes_data:
+        income["id"] = str(income.pop("_id"))
+        incomes_list.append(Income(**income))
     return incomes_list
 
 

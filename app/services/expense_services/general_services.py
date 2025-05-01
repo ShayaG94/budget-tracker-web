@@ -16,9 +16,12 @@ def create_expense(expense: Expense) -> Expense:
     return expense
 
 
-def get_all_expenses() -> List[Expense]:
+def get_all_expenses():
     expenses_data = expense_collection.find()
-    expenses_list = [Expense(**expense) for expense in expenses_data]
+    expenses_list = []
+    for expense in expenses_data:
+        expense["id"] = str(expense.pop("_id"))
+        expenses_list.append(Expense(**expense))
     return expenses_list
 
 
