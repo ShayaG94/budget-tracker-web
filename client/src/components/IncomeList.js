@@ -1,20 +1,79 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Typography, Button, Card, CardContent, CardHeader, Box, Link } from "@mui/material";
+import { styled } from "@mui/material/styles";
+import { motion } from "framer-motion";
+import { Link as RouterLink } from "react-router-dom";
 
-function IncomeList() {
+// Styled components for a more modern look
+const ListContainer = styled(Box)(({ theme }) => ({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    marginTop: theme.spacing(4),
+}));
+
+const StyledCard = styled(Card)(({ theme }) => ({
+    width: "100%",
+    maxWidth: 600,
+    borderRadius: theme.shape.borderRadius,
+    boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+    transition: "transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
+    "&:hover": {
+        transform: "translateY(-4px)",
+        boxShadow: "0px 6px 15px rgba(0, 0, 0, 0.1)",
+    },
+    marginBottom: theme.spacing(2),
+}));
+
+const StyledCardHeader = styled(CardHeader)(({ theme }) => ({
+    backgroundColor: theme.palette.success.main,
+    color: theme.palette.primary.contrastText,
+    padding: theme.spacing(2),
+    textAlign: "center",
+    borderTopLeftRadius: theme.shape.borderRadius,
+    borderTopRightRadius: theme.shape.borderRadius,
+}));
+
+const StyledCardContent = styled(CardContent)(({ theme }) => ({
+    padding: theme.spacing(2),
+}));
+
+const StyledButton = styled(Button)(({ theme }) => ({
+    marginTop: theme.spacing(2),
+    marginBottom: theme.spacing(2),
+    padding: theme.spacing(1, 2),
+    fontWeight: 600,
+    borderRadius: theme.shape.borderRadius,
+    transition: "transform 0.2s ease-in-out",
+    "&:hover": {
+        transform: "scale(1.05)",
+    },
+}));
+
+const ListItem = styled(Box)(({ theme }) => ({
+    display: "flex",
+    justifyContent: "space-between",
+    alignItems: "center",
+    padding: theme.spacing(1, 0),
+    borderBottom: `1px solid rgba(0, 0, 0, 0.1)`,
+    "&:last-child": {
+        borderBottom: "none",
+    },
+}));
+
+const IncomeList = () => {
     const [incomes, setIncomes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        async function fetchIncomes() {
+        const fetchIncomes = async () => {
             setLoading(true);
             setError(null);
             try {
-                const response = await fetch("http://localhost:8000/incomes/"); // Corrected URL
+                const response = await fetch("http://localhost:8000/incomes");
                 if (!response.ok) {
-                    const message = `HTTP error! status: ${response.status}`;
-                    throw new Error(message);
+                    throw new Error("Failed to fetch incomes");
                 }
                 const data = await response.json();
                 setIncomes(data);
@@ -23,47 +82,60 @@ function IncomeList() {
             } finally {
                 setLoading(false);
             }
-        }
+        };
 
         fetchIncomes();
     }, []);
 
     if (loading) {
-        return <div>Loading incomes...</div>;
+        return <Typography variant="body1">Loading incomes...</Typography>;
     }
 
     if (error) {
-        return <div>Error loading incomes: {error}</div>;
+        return <Typography variant="body1">Error: {error}</Typography>;
     }
 
     return (
-        <div>
-            <h2>Existing Incomes</h2>
-            <p>
-                <Link to="/incomes/add">Add New Income</Link>
-            </p>
-            <div id="incomesList">
-                {incomes.length > 0 ? (
-                    <ul>
-                        {incomes.map((income) => (
-                            <li key={income.id}>
-                                {/* Adapt this to your Income model's fields */}
-                                <strong>Date:</strong> {income.date}
-                                <br />
-                                <strong>Source:</strong> {income.source}
-                                <br />
-                                <strong>Amount:</strong> {income.amount}
-                                <br />
-                                <strong>ID:</strong> {income.id}
-                            </li>
-                        ))}
-                    </ul>
-                ) : (
-                    <p>No incomes recorded yet.</p>
-                )}
-            </div>
-        </div>
+        <ListContainer>
+            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+                <StyledCard>
+                    <StyledCardHeader title="Incomes" />
+                    <StyledCardContent>
+                        {incomes.length === 0 ? (
+                            <Typography variant="body1">No incomes found.</Typography>
+                        ) : (
+                            <div>
+                                {incomes.map((income) => (
+                                    <ListItem key={income.id}>
+                                        <Typography variant="body1">
+                                            <Link
+                                                component={RouterLink}
+                                                to={`/incomes/${income.id}`}
+                                                style={{ textDecoration: "none", color: "inherit" }}
+                                            >
+                                                {income.source}
+                                            </Link>
+                                        </Typography>
+                                        <Typography variant="body1">${income.amount}</Typography>
+                                        <Link component={RouterLink} to={`/incomes/${income.id}`} style={{ textDecoration: "none" }}>
+                                            <StyledButton variant="outlined" size="small" color="primary">
+                                                View Details
+                                            </StyledButton>
+                                        </Link>
+                                    </ListItem>
+                                ))}
+                            </div>
+                        )}
+                        <Link component={RouterLink} to="/add-income">
+                            <StyledButton variant="contained" color="primary">
+                                Add Income
+                            </StyledButton>
+                        </Link>
+                    </StyledCardContent>
+                </StyledCard>
+            </motion.div>
+        </ListContainer>
     );
-}
+};
 
 export default IncomeList;

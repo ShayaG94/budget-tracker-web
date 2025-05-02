@@ -1,36 +1,36 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { AppBar, Toolbar, Button, Container } from "@mui/material";
 import HomePage from "./components/HomePage";
 import AddExpenseForm from "./components/AddExpenseForm";
 import ExpenseList from "./components/ExpenseList";
-import AddIncomeForm from "./components/AddIncomeForm"; // Import AddIncomeForm
-import IncomeList from "./components/IncomeList"; // Import IncomeList
-import "./App.css";
+import AddIncomeForm from "./components/AddIncomeForm";
+import IncomeList from "./components/IncomeList";
 
 function App() {
     return (
         <Router>
             <div className="App">
-                <nav>
-                    <ul>
-                        <li>
-                            <Link to="/">Home</Link>
-                        </li>
-                        <li>
-                            <Link to="/expenses">Expenses</Link>
-                        </li>
-                        <li>
-                            <Link to="/incomes">Incomes</Link>
-                        </li>
-                    </ul>
-                </nav>
-                <div className="container">
+                <AppBar position="static">
+                    <Toolbar>
+                        <Button color="inherit" component={Link} to="/">
+                            Home
+                        </Button>
+                        <Button color="inherit" component={Link} to="/expenses">
+                            Expenses
+                        </Button>
+                        <Button color="inherit" component={Link} to="/incomes">
+                            Incomes
+                        </Button>
+                    </Toolbar>
+                </AppBar>
+                <Container>
                     <Routes>
                         <Route path="/" element={<HomePage />} />
-                        <Route path="/expenses" element={<ExpenseRoutes />} />
-                        <Route path="/incomes" element={<IncomeRoutes />} />
+                        <Route path="/expenses/*" element={<ExpenseRoutes />} />
+                        <Route path="/incomes/*" element={<IncomeRoutes />} />
                     </Routes>
-                </div>
+                </Container>
             </div>
         </Router>
     );
