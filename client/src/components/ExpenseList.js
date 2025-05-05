@@ -150,9 +150,9 @@ const ExpenseList = () => {
                                 {expenses.map((expense) => {
                                     return (
                                         <Link
-                                            key={expense.id}
+                                            key={expense._id}
                                             component={RouterLink}
-                                            to={`/expenses/${expense.id}`}
+                                            to={`/expenses/${expense._id}`}
                                             style={{
                                                 textDecoration: "none",
                                                 color: "inherit",

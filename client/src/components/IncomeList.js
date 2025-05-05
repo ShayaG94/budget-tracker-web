@@ -106,18 +106,18 @@ const IncomeList = () => {
                         ) : (
                             <div>
                                 {incomes.map((income) => (
-                                    <ListItem key={income.id}>
+                                    <ListItem key={income._id}>
                                         <Typography variant="body1">
                                             <Link
                                                 component={RouterLink}
-                                                to={`/incomes/${income.id}`}
+                                                to={`/incomes/${income._id}`}
                                                 style={{ textDecoration: "none", color: "inherit" }}
                                             >
                                                 {income.source}
                                             </Link>
                                         </Typography>
                                         <Typography variant="body1">${income.amount}</Typography>
-                                        <Link component={RouterLink} to={`/incomes/${income.id}`} style={{ textDecoration: "none" }}>
+                                        <Link component={RouterLink} to={`/incomes/${income._id}`} style={{ textDecoration: "none" }}>
                                             <StyledButton variant="outlined" size="small" color="primary">
                                                 View Details
                                             </StyledButton>
