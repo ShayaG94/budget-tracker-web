@@ -20,9 +20,20 @@ def get_all_expenses():
     expenses_data = expense_collection.find()
     expenses_list = []
     for expense in expenses_data:
-        expense["id"] = str(expense.pop("_id"))
+        expense["_id"] = str(expense["_id"])
         expenses_list.append(Expense(**expense))
     return expenses_list
+
+
+def get_expense(expense_id: str):
+    try:
+        object_id = ObjectId(expense_id)
+    except Exception:
+        return None
+    expense = expense_collection.find_one({"_id": object_id})
+    if not expense:
+        return None
+    return expense
 
 
 def get_expenses_by_tag(tags: List[str]) -> List[Expense]:

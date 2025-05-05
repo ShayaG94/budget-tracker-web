@@ -19,6 +19,13 @@ async def get_all_incomes():
     return incomes
 
 
+@router.get("/{income_id}", response_model=dict)
+async def get_income(income_id):
+    income = general_services.get_income(income_id)
+    income["_id"] = str(income["_id"])
+    return income
+
+
 @router.get("/tag/", response_model=List[Income])
 async def get_income_by_tag(tags: List[str]):
     incomes = general_services.get_income_by_tag(tags)

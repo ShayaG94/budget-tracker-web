@@ -15,9 +15,16 @@ async def create_expense(expense: Expense):
 
 
 @router.get("/", response_model=List[Expense])
-async def get_expenses():
+async def get_all_expenses():
     expenses = general_services.get_all_expenses()
     return expenses
+
+
+@router.get("/{expense_id}", response_model=dict)
+async def get_expense(expense_id):
+    expense = general_services.get_expense(expense_id)
+    expense["_id"] = str(expense["_id"])
+    return expense
 
 
 @router.get("/tag/", response_model=List[Expense])
