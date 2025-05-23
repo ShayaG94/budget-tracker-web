@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+pydantic
+motor
+firebase-admin
+python-dotenv
