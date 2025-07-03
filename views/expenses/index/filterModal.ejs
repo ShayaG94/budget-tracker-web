@@ -1,0 +1,139 @@
+<!-- Filter Modal -->
+<link rel="stylesheet" href="stylesheets/expensesFilterModal.css" />
+<div
+    class="modal fade"
+    id="sortFilterModal"
+    tabindex="-1"
+    aria-labelledby="sortFilterModalLabel"
+    aria-hidden="true"
+>
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="sortFilterModalLabel">Filter Expenses</h5>
+                <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                ></button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Category Checklist -->
+                <div class="mb-3">
+                    <h6>Categories</h6>
+                    <div id="categoryChecklist">
+                        <% if (typeof categories !== "undefined") { %> <%
+                        categories.forEach(function(category) { %>
+                        <div class="form-check">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value="<%= category %>"
+                                id="cat-<%= category %>"
+                                checked
+                            />
+                            <label class="form-check-label" for="cat-<%= category %>"
+                                ><%= category %></label
+                            >
+                        </div>
+                        <% }); %> <% } %>
+                    </div>
+                </div>
+
+                <!-- Date Range Section -->
+                <div class="mb-3">
+                    <h6>Date Range</h6>
+                    <ul class="nav nav-pills mb-2" id="dateRangeNav">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="#" data-range="ytd">YTD</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-range="mtd">MTD</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#" data-range="custom">Custom</a>
+                        </li>
+                    </ul>
+                    <div class="row">
+                        <div class="col">
+                            <label for="startDate" class="form-label">Start Date</label>
+                            <input type="date" id="startDate" class="form-control" />
+                        </div>
+                        <div class="col">
+                            <label for="endDate" class="form-label">End Date</label>
+                            <input type="date" id="endDate" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Price Range -->
+                <div class="mb-3">
+                    <h6>Price Range</h6>
+                    <div class="d-flex mb-3">
+                        <div class="input-group me-2">
+                            <span class="input-group-text">₪</span>
+                            <input
+                                type="text"
+                                id="minPrice"
+                                class="form-control"
+                                placeholder="Min"
+                                value="0"
+                            />
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">₪</span>
+                            <input
+                                type="text"
+                                id="maxPrice"
+                                class="form-control"
+                                placeholder="Max"
+                                value="10,000"
+                            />
+                        </div>
+                    </div>
+                    <div id="priceSlider" class="mx-3" data-max-price="<%= maxPrice %>"></div>
+                </div>
+
+                <!-- NOBs Checklist -->
+                <div class="mb-3">
+                    <h6>Name of Business</h6>
+                    <div id="nobChecklist">
+                        <% if (typeof nobs !== "undefined") { %> <% nobs.forEach(function(nob) { %>
+                        <div class="form-check">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                value="<%= nob %>"
+                                id="nob-<%= nob.replace(/\s/g, '-') %>"
+                                checked
+                            />
+                            <label class="form-check-label" for="nob-<%= nob.replace(/\s/g, '-') %>"
+                                ><%= nob %></label
+                            >
+                        </div>
+                        <% }); %> <% } %>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <!-- Ensure your filter trigger button uses the ID "filterBtn" -->
+                <button
+                    id="applyFilterBtn"
+                    type="button"
+                    class="btn btn-primary"
+                    data-bs-dismiss="modal"
+                >
+                    Apply Filters
+                </button>
+                <button id="resetFilterBtn" type="button" class="btn btn-secondary">
+                    Reset Filters
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="/scripts/filter.js"></script>
