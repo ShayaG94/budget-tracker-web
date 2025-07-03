@@ -3,6 +3,7 @@ const ejsMate = require("ejs-mate");
 const methodOverride = require("method-override");
 const path = require("path");
 const mongoose = require("mongoose");
+require("dotenv").config();
 
 const homeRoute = require("./routes/home");
 const expensesRoutes = require("./routes/expenses");
@@ -10,16 +11,14 @@ const expensesRoutes = require("./routes/expenses");
 const formatters = require("./utils/formatters");
 const getCurrentMonthYear = require("./utils/dates/getCurrentMonthYear");
 
-const dbURL = "mongodb://localhost:27017/budget-tracker";
-
 mongoose.set("strictQuery", true);
-mongoose.connect(dbURL);
-
-const db = mongoose.connection;
-db.on("error", console.error.bind(console, "connection error:"));
-db.once("open", () => {
-    console.log("Database connected");
-});
+mongoose
+    .connect(process.env.MONGODB_URI, {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+    })
+    .then(() => console.log("Connected to MongoDB"))
+    .catch((err) => console.error("MongoDB connection error:", err));
 
 const app = express();
 
