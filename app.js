@@ -34,6 +34,6 @@ app.locals.getCurrentMonthYear = getCurrentMonthYear.getCurrentMonthYear;
 app.use("/", homeRoute);
 app.use("/expenses", expensesRoutes);
 
-app.listen(3000, "0.0.0.0", () => {
-    console.log("Budget Tracker: Serving on PORT 3000");
+app.listen(3030, "0.0.0.0", () => {
+    console.log("Budget Tracker: Serving on PORT 3030");
 });
