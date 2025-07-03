@@ -1,7 +1,0 @@
-#sortButton i {
-    transition: transform 0.3s ease;
-}
-
-#sortButton i.flipped {
-    transform: rotate(180deg);
-}

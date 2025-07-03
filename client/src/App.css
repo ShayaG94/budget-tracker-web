@@ -1,0 +1,27 @@
+.App nav {
+  background-color: #333;
+  color: #fff;
+  padding: 10px 0;
+}
+
+.App nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.App nav ul li {
+  margin: 0 15px;
+}
+
+.App nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.App nav ul li a:hover {
+  color: #ddd;
+}
