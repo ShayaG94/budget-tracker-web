@@ -22,5 +22,6 @@ Thumbs.db
 # IDEs
 .vscode/
 .idea/
+.prettierrc
 
-gemini_prompt.txt
+seeds/

@@ -1,0 +1,8 @@
+<% layout("layouts/boilerplate") %>
+
+<div class="container my-4">
+    <h2 class="text-start mb-4"><%= getCurrentMonthYear() %></h2>
+    <div class="row justify-content-center g-4">
+        <%- include("./expenses_card") %> <%- include("./incomes_card") %>
+    </div>
+</div>

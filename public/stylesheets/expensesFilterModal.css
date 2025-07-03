@@ -1,0 +1,18 @@
+/* Make checkboxes larger */
+#categoryChecklist .form-check-input,
+#nobChecklist .form-check-input {
+    transform: scale(1.2); /* Increase the size */
+    margin-right: 0.5rem; /* Adjust spacing if needed */
+}
+
+.form-check {
+    margin-left: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Limit displayed checkboxes to 5 and enable scrolling if there are more */
+#categoryChecklist,
+#nobChecklist {
+    max-height: 170px; /* Adjust based on the approximate height of 5 checkboxes */
+    overflow-y: auto;
+}
