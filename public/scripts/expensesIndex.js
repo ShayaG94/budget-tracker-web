@@ -9,13 +9,7 @@ function sumIndexExpenses() {
     const total = prices.reduce((acc, val) => acc + val, 0);
 
     // Format as ILS (₪)
-    const formattedTotal = new Intl.NumberFormat("en-IL", {
-        style: "currency",
-        currency: "ILS",
-    })
-        .format(total)
-        .replace(/^(\D+)/, "$1 ")
-        .replace(/\s+/, " ");
+    const formattedTotal = formattedSum(total);
 
     // Inject next to title
     const sum = document.querySelector("#totalExpenses");
@@ -23,3 +17,13 @@ function sumIndexExpenses() {
         sum.innerText = formattedTotal;
     }
 }
+
+const formattedSum = (sum) => {
+    return new Intl.NumberFormat("en-IL", {
+        style: "currency",
+        currency: "ILS",
+    })
+        .format(sum)
+        .replace(/^(\D+)/, "$1 ")
+        .replace(/\s+/, " ");
+};

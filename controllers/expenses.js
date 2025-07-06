@@ -10,6 +10,11 @@ module.exports.index = async (req, res, next) => {
         categories: extractCategories(expenses),
         nobs: extractNobs(expenses),
         maxPrice: maxPrice,
+        sum: expenses.reduce((acc, exp) => acc + exp.price, 0),
+        totalDays:
+            Math.floor(
+                (expenses[0]?.date - expenses[expenses.length - 1]?.date) / (1000 * 60 * 60 * 24)
+            ) || 0,
     });
 };
 
