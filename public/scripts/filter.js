@@ -221,6 +221,12 @@ document.addEventListener("DOMContentLoaded", () => {
     setYTD();
 });
 
+document.getElementById("selectAllBtn").addEventListener("click", () => {
+    document.querySelectorAll(".category-check").forEach((checkbox) => {
+        checkbox.checked = true;
+    });
+});
+
 document.getElementById("deselectAllBtn").addEventListener("click", () => {
     document.querySelectorAll(".category-check").forEach((checkbox) => {
         checkbox.checked = false;
