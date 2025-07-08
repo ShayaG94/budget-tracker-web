@@ -1,5 +1,5 @@
 const Expense = require("../models/expense");
-const { extractCategories, extractNobs } = require("../utils/extractData");
+const { extractCategories, extractNobs, extractAvailableMonths } = require("../utils/extractData");
 
 module.exports.index = async (req, res, next) => {
     const expenses = await Expense.find({}).sort({ date: -1 });
@@ -15,6 +15,7 @@ module.exports.index = async (req, res, next) => {
             Math.floor(
                 (expenses[0]?.date - expenses[expenses.length - 1]?.date) / (1000 * 60 * 60 * 24)
             ) || 0,
+        availableMonths: extractAvailableMonths(expenses),
     });
 };
 

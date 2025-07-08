@@ -1,24 +1,16 @@
 document.addEventListener("DOMContentLoaded", () => {
     sumIndexExpenses();
-    // When the Apply Filters button is clicked, force it to lose focus.
-    document.getElementById("applyFilterBtn").addEventListener("click", function () {
-        this.blur();
-    });
 
-    // When the modal finishes hiding, move focus to the filter button (outside the modal).
     const sortFilterModalEl = document.getElementById("sortFilterModal");
     sortFilterModalEl.addEventListener("hidden.bs.modal", () => {
         document.getElementById("filterButton").focus();
     });
-    /* ---------------------------
-     Price Slider Initialization
-  ---------------------------- */
+
     const priceSlider = document.getElementById("priceSlider");
     const minPriceInput = document.getElementById("minPrice");
     const maxPriceInput = document.getElementById("maxPrice");
 
-    // Create the slider without tooltips.
-    const dynamicMax = Number(document.getElementById("priceSlider").dataset.maxPrice || 10000);
+    const dynamicMax = Number(priceSlider.dataset.maxPrice || 10000);
 
     noUiSlider.create(priceSlider, {
         start: [0, dynamicMax],
@@ -30,235 +22,206 @@ document.addEventListener("DOMContentLoaded", () => {
         },
     });
 
-    // Sync slider values to the input fields with thousand separators.
     priceSlider.noUiSlider.on("update", (values, handle) => {
         const value = Number(values[handle]);
         const formatted = value.toLocaleString();
-        if (handle === 0) {
-            minPriceInput.value = formatted;
-        } else {
-            maxPriceInput.value = formatted;
-        }
+        if (handle === 0) minPriceInput.value = formatted;
+        else maxPriceInput.value = formatted;
     });
 
-    // Update the slider as the user edits the input fields.
     minPriceInput.addEventListener("input", () => {
-        const rawValue = minPriceInput.value.replace(/,/g, "");
-        const value = Number(rawValue);
-        if (!isNaN(value)) {
-            priceSlider.noUiSlider.set([value, null]);
-        }
+        const value = Number(minPriceInput.value.replace(/,/g, ""));
+        if (!isNaN(value)) priceSlider.noUiSlider.set([value, null]);
     });
+
     maxPriceInput.addEventListener("input", () => {
-        const rawValue = maxPriceInput.value.replace(/,/g, "");
-        const value = Number(rawValue);
-        if (!isNaN(value)) {
-            priceSlider.noUiSlider.set([null, value]);
-        }
+        const value = Number(maxPriceInput.value.replace(/,/g, ""));
+        if (!isNaN(value)) priceSlider.noUiSlider.set([null, value]);
     });
 
-    // Reformat the input fields on blur
     minPriceInput.addEventListener("blur", () => {
-        const rawValue = minPriceInput.value.replace(/,/g, "");
-        const value = Number(rawValue);
-        if (!isNaN(value)) {
-            minPriceInput.value = value.toLocaleString();
-        }
-    });
-    maxPriceInput.addEventListener("blur", () => {
-        const rawValue = maxPriceInput.value.replace(/,/g, "");
-        const value = Number(rawValue);
-        if (!isNaN(value)) {
-            maxPriceInput.value = value.toLocaleString();
-        }
+        const value = Number(minPriceInput.value.replace(/,/g, ""));
+        if (!isNaN(value)) minPriceInput.value = value.toLocaleString();
     });
 
-    /* ---------------------------
-     Date Range Setup (YTD)
-  ---------------------------- */
+    maxPriceInput.addEventListener("blur", () => {
+        const value = Number(maxPriceInput.value.replace(/,/g, ""));
+        if (!isNaN(value)) maxPriceInput.value = value.toLocaleString();
+    });
+
     const startDateInput = document.getElementById("startDate");
     const endDateInput = document.getElementById("endDate");
+    const customDateInputs = document.getElementById("customDateInputs");
+    const monthSelector = document.getElementById("monthSelector");
+
     const today = new Date();
     const startOfYear = new Date(today.getFullYear(), 0, 1);
-
-    function formatDate(date) {
-        const year = date.getFullYear();
-        let month = (date.getMonth() + 1).toString().padStart(2, "0");
-        let day = date.getDate().toString().padStart(2, "0");
-        return `${year}-${month}-${day}`;
-    }
-
-    startDateInput.value = formatDate(startOfYear);
-    endDateInput.value = formatDate(today);
-
-    /* ---------------------------
-         Apply Filters
-  ---------------------------- */
-    document.getElementById("applyFilterBtn").addEventListener("click", () => {
-        const selectedCategories = Array.from(
-            document.querySelectorAll('#categoryChecklist input[type="checkbox"]:checked')
-        ).map((cb) => cb.value);
-        const selectedNOBs = Array.from(
-            document.querySelectorAll('#nobChecklist input[type="checkbox"]:checked')
-        ).map((cb) => cb.value);
-        const filterStartDate = new Date(startDateInput.value);
-        const filterEndDate = new Date(endDateInput.value);
-        // remove all commas before converting
-        const rawMin = minPriceInput.value.replace(/,/g, "");
-        const rawMax = maxPriceInput.value.replace(/,/g, "");
-        const minPrice = Number(rawMin) || 0;
-        const maxPrice = Number(rawMax) || Infinity;
-
-        const expenseItems = document.querySelectorAll(".expense-item");
-        expenseItems.forEach((item) => {
-            const expense = JSON.parse(item.dataset.expense.trim());
-            let visible = true;
-            if (!selectedCategories.includes(expense.category)) visible = false;
-            if (!selectedNOBs.includes(expense.nob)) visible = false;
-            const expenseDate = new Date(expense.date);
-            if (expenseDate < filterStartDate || expenseDate > filterEndDate) visible = false;
-            if (expense.price < minPrice || expense.price > maxPrice) visible = false;
-            item.style.display = visible ? "" : "none";
-        });
-
-        // After you've shown/hidden each .expense-item:
-        const anyVisible = Array.from(expenseItems).some((item) => item.style.display !== "none");
-        // If any item is visible, hide the no-results message; otherwise, show it.
-        // Show or hide the no-results message:
-        document.getElementById("noResultsMessage").style.display = anyVisible ? "none" : "";
-        sumIndexExpenses();
-    });
-
-    /* ---------------------------
-         Reset Filters
-  ---------------------------- */
-    document.getElementById("resetFilterBtn").addEventListener("click", () => {
-        document
-            .querySelectorAll('#categoryChecklist input[type="checkbox"]')
-            .forEach((cb) => (cb.checked = true));
-        document
-            .querySelectorAll('#nobChecklist input[type="checkbox"]')
-            .forEach((cb) => (cb.checked = true));
-        startDateInput.value = formatDate(startOfYear);
-        endDateInput.value = formatDate(today);
-        minPriceInput.value = 0;
-        maxPriceInput.value = 10000;
-        priceSlider.noUiSlider.set([0, 10000]);
-        document.querySelectorAll(".expense-item").forEach((item) => {
-            item.style.display = "";
-        });
-    });
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
     const dateRangeNav = document.getElementById("dateRangeNav");
 
-    // Helper function to format a date to yyyy-mm-dd.
     function formatDate(date) {
-        const year = date.getFullYear();
-        let month = (date.getMonth() + 1).toString().padStart(2, "0");
-        let day = date.getDate().toString().padStart(2, "0");
-        return `${year}-${month}-${day}`;
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, "0");
+        const d = String(date.getDate()).padStart(2, "0");
+        return `${y}-${m}-${d}`;
     }
 
-    // Disable the date inputs.
     function disableDateInputs() {
+        startDateInput.setAttribute("disabled", true);
         endDateInput.setAttribute("disabled", true);
     }
 
-    // Enable manual input.
     function enableDateInputs() {
         startDateInput.removeAttribute("disabled");
         endDateInput.removeAttribute("disabled");
     }
 
-    // Set the YTD date range.
     function setYTD() {
-        const today = new Date();
-        const startOfYear = new Date(today.getFullYear(), 0, 1);
         startDateInput.value = formatDate(startOfYear);
         endDateInput.value = formatDate(today);
         disableDateInputs();
+        customDateInputs.style.display = "none";
     }
 
-    // Set the MTD date range.
     function setMTD() {
-        const today = new Date();
-        const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
         startDateInput.value = formatDate(startOfMonth);
         endDateInput.value = formatDate(today);
         disableDateInputs();
+        customDateInputs.style.display = "none";
     }
 
-    // Set custom: enable manual modifications.
     function setCustom() {
         enableDateInputs();
+        customDateInputs.style.display = "flex";
     }
 
-    // Event listener for nav button clicks.
+    // Handle nav clicks
     dateRangeNav.addEventListener("click", (e) => {
-        e.preventDefault();
         const target = e.target;
-        if (target.tagName !== "A") return;
+        if (!target.classList.contains("nav-link")) return;
+        e.preventDefault();
 
-        // Remove active class from all nav links.
-        const links = dateRangeNav.querySelectorAll(".nav-link");
-        links.forEach((link) => link.classList.remove("active"));
-
-        // Add active class to the clicked link.
+        document
+            .querySelectorAll("#dateRangeNav .nav-link")
+            .forEach((link) => link.classList.remove("active"));
         target.classList.add("active");
+        monthSelector.selectedIndex = 0;
 
-        // Adjust date fields based on selection.
         const range = target.getAttribute("data-range");
-        if (range === "ytd") {
-            setYTD();
-        } else if (range === "mtd") {
-            setMTD();
-        } else if (range === "custom") {
-            setCustom();
-        }
+        if (range === "ytd") setYTD();
+        else if (range === "mtd") setMTD();
+        else if (range === "custom") setCustom();
     });
 
-    // By default, set YTD on load.
+    // Default: YTD
     setYTD();
-});
 
-document.getElementById("selectAllBtn").addEventListener("click", () => {
-    document.querySelectorAll(".category-check").forEach((checkbox) => {
-        checkbox.checked = true;
+    // Month selector logic
+    monthSelector.addEventListener("change", () => {
+        const selectedMonth = monthSelector.value;
+        const [year, month] = selectedMonth.split("-").map(Number);
+        const startDate = new Date(year, month - 1, 1);
+        const endDate = new Date(year, month, 0);
+
+        startDateInput.value = formatDate(startDate);
+        endDateInput.value = formatDate(endDate);
+        monthSelector.classList.add("active-month");
+
+        disableDateInputs();
+        customDateInputs.style.display = "none";
+
+        document
+            .querySelectorAll("#dateRangeNav .nav-link")
+            .forEach((link) => link.classList.remove("active"));
     });
-});
 
-document.getElementById("deselectAllBtn").addEventListener("click", () => {
-    document.querySelectorAll(".category-check").forEach((checkbox) => {
-        checkbox.checked = false;
+    document.getElementById("selectAllBtn").addEventListener("click", () => {
+        document.querySelectorAll(".category-check").forEach((cb) => (cb.checked = true));
     });
-});
 
-document.querySelectorAll(".only-btn").forEach((button) => {
-    button.addEventListener("click", () => {
-        const targetCategory = button.getAttribute("data-category");
-        document.querySelectorAll(".category-check").forEach((checkbox) => {
-            checkbox.checked = checkbox.value === targetCategory;
+    document.getElementById("deselectAllBtn").addEventListener("click", () => {
+        document.querySelectorAll(".category-check").forEach((cb) => (cb.checked = false));
+    });
+
+    document.querySelectorAll(".only-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+            const targetCategory = button.getAttribute("data-category");
+            document.querySelectorAll(".category-check").forEach((cb) => {
+                cb.checked = cb.value === targetCategory;
+            });
         });
     });
-});
 
-document.getElementById("selectAllNobBtn").addEventListener("click", () => {
-    document.querySelectorAll(".nob-check").forEach((checkbox) => {
-        checkbox.checked = true;
+    document.getElementById("selectAllNobBtn").addEventListener("click", () => {
+        document.querySelectorAll(".nob-check").forEach((cb) => (cb.checked = true));
     });
-});
 
-document.getElementById("deselectAllNobBtn").addEventListener("click", () => {
-    document.querySelectorAll(".nob-check").forEach((checkbox) => {
-        checkbox.checked = false;
+    document.getElementById("deselectAllNobBtn").addEventListener("click", () => {
+        document.querySelectorAll(".nob-check").forEach((cb) => (cb.checked = false));
     });
-});
 
-document.querySelectorAll(".only-nob-btn").forEach((button) => {
-    button.addEventListener("click", () => {
-        const targetNob = button.getAttribute("data-nob");
-        document.querySelectorAll(".nob-check").forEach((checkbox) => {
-            checkbox.checked = checkbox.value === targetNob;
+    document.querySelectorAll(".only-nob-btn").forEach((button) => {
+        button.addEventListener("click", () => {
+            const targetNob = button.getAttribute("data-nob");
+            document.querySelectorAll(".nob-check").forEach((cb) => {
+                cb.checked = cb.value === targetNob;
+            });
         });
+    });
+
+    document.getElementById("applyFilterBtn").addEventListener("click", () => {
+        const selectedCategories = Array.from(
+            document.querySelectorAll(".category-check:checked")
+        ).map((cb) => cb.value);
+
+        const selectedNOBs = Array.from(document.querySelectorAll(".nob-check:checked")).map(
+            (cb) => cb.value
+        );
+
+        const filterStartDate = new Date(startDateInput.value);
+        const filterEndDate = new Date(endDateInput.value);
+
+        const minPrice = Number(minPriceInput.value.replace(/,/g, "")) || 0;
+        const maxPrice = Number(maxPriceInput.value.replace(/,/g, "")) || Infinity;
+
+        const expenseItems = document.querySelectorAll(".expense-item");
+
+        expenseItems.forEach((item) => {
+            const expense = JSON.parse(item.dataset.expense.trim());
+            let visible =
+                selectedCategories.includes(expense.category) &&
+                selectedNOBs.includes(expense.nob) &&
+                new Date(expense.date) >= filterStartDate &&
+                new Date(expense.date) <= filterEndDate &&
+                expense.price >= minPrice &&
+                expense.price <= maxPrice;
+
+            item.style.display = visible ? "" : "none";
+        });
+
+        const anyVisible = Array.from(expenseItems).some((item) => item.style.display !== "none");
+        document.getElementById("noResultsMessage").style.display = anyVisible ? "none" : "";
+        sumIndexExpenses();
+    });
+
+    document.getElementById("resetFilterBtn").addEventListener("click", () => {
+        document.querySelectorAll(".category-check").forEach((cb) => (cb.checked = true));
+        document.querySelectorAll(".nob-check").forEach((cb) => (cb.checked = true));
+
+        startDateInput.value = formatDate(startOfYear);
+        endDateInput.value = formatDate(today);
+        disableDateInputs();
+
+        minPriceInput.value = "0";
+        maxPriceInput.value = dynamicMax.toLocaleString();
+        priceSlider.noUiSlider.set([0, dynamicMax]);
+
+        document.querySelectorAll(".expense-item").forEach((item) => {
+            item.style.display = "";
+        });
+
+        document.getElementById("noResultsMessage").style.display = "none";
+        sumIndexExpenses();
     });
 });
