@@ -241,3 +241,24 @@ document.querySelectorAll(".only-btn").forEach((button) => {
         });
     });
 });
+
+document.getElementById("selectAllNobBtn").addEventListener("click", () => {
+    document.querySelectorAll(".nob-check").forEach((checkbox) => {
+        checkbox.checked = true;
+    });
+});
+
+document.getElementById("deselectAllNobBtn").addEventListener("click", () => {
+    document.querySelectorAll(".nob-check").forEach((checkbox) => {
+        checkbox.checked = false;
+    });
+});
+
+document.querySelectorAll(".only-nob-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+        const targetNob = button.getAttribute("data-nob");
+        document.querySelectorAll(".nob-check").forEach((checkbox) => {
+            checkbox.checked = checkbox.value === targetNob;
+        });
+    });
+});
