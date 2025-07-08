@@ -220,3 +220,18 @@ document.addEventListener("DOMContentLoaded", () => {
     // By default, set YTD on load.
     setYTD();
 });
+
+document.getElementById("deselectAllBtn").addEventListener("click", () => {
+    document.querySelectorAll(".category-check").forEach((checkbox) => {
+        checkbox.checked = false;
+    });
+});
+
+document.querySelectorAll(".only-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+        const targetCategory = button.getAttribute("data-category");
+        document.querySelectorAll(".category-check").forEach((checkbox) => {
+            checkbox.checked = checkbox.value === targetCategory;
+        });
+    });
+});
