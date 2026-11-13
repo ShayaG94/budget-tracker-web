@@ -1,6 +1,6 @@
 <li
   class="list-group-item clickable-list-item expense-item"
-  data-expense="<%- JSON.stringify(expense).replace(/"/g, '&quot;') %>"
+  data-expense="<%= JSON.stringify(expense) %>"
 >
   <a 
     href="/expenses/<%= expense._id %>" 
